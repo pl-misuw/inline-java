@@ -29,21 +29,32 @@ jobs:
         run: |
             ls -lah $HOME
             echo ===
-            # ls -lah $HOME/.cache/bazel
+            echo "check $HOME/.cache/bazel"
+            ls -lah $HOME/.cache/bazel
             echo ===
-            # ls ~/.cache/bazel
+            echo "check ~/.cache/bazel"
+            ls ~/.cache/bazel
             echo ===
-            # ls -lah $HOME/work/inline-java/inline-java
+            echo "check $HOME/work/inline-java/inline-java"
+            ls -lah $HOME/work/inline-java/inline-java
             echo ===
             echo "Setup .bazelrc.local"
             echo "build --bes_results_url=https://app.buildbuddy.io/invocation/" > ${{ github.workspace }}/.bazelrc.local
             echo "build --bes_backend=grpcs://cloud.buildbuddy.io" >> ${{ github.workspace }}/.bazelrc.local
-            echo "build --remote_cache=grpcs://cloud.buildbuddy.io" >> ${{ github.workspace }}/.bazelrc.local
-            echo "build --remote_timeout=3600" >> ${{ github.workspace }}/.bazelrc.local
+            echo "common --disk_cache=$HOME/.cache/bazel" >> .bazelrc.local
             echo ===
             ls -lah ${{ github.workspace }}
             echo ===
             cat ${{ github.workspace }}/.bazelrc.local
+            echo ===
+            echo "check ~/.cache/bazel"
+            cd ~/.cache/bazel
+            pwd
+            echo ===
+            echo "check $HOME/.cache/bazel"
+            cd $HOME/.cache/bazel
+            pwd
+            cd ${{ github.workspace }}
             echo ===
 
       - name: Prefetch Stackage snapshot
