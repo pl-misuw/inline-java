@@ -29,6 +29,8 @@ jobs:
         run: |
             ls -lah $HOME
             echo ===
+            ls -lah $HOME/.cache/bazel
+            echo ===
             ls ~/.cache/bazel
             echo ===
             ls -lah $HOME/work/inline-java/inline-java
