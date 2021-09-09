@@ -61,11 +61,11 @@ jobs:
         # Retry if needed due to network flakiness.
         run: |
           nix-shell --pure --run \
-            'cmd="bazel fetch --disk_cache=$HOME/.cache/bazel @stackage//... "; $cmd || $cmd || $cmd'
+            'cmd="bazel fetch @stackage//... --disk_cache=$HOME/.cache/bazel "; $cmd || $cmd || $cmd'
 
       - name: Build all
         run: |
-            nix-shell --pure --run 'bazel --disk_cache=$HOME/.cache/bazel build //... '
+            nix-shell --pure --run 'bazel build //... --disk_cache=$HOME/.cache/bazel '
 
       - name: Run tests
         run: |
