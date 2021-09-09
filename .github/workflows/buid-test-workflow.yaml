@@ -44,7 +44,6 @@ jobs:
             echo "build --disk_cache=$HOME/.cache/bazel" >> .bazelrc.local
             echo ===
             ls -lah ${{ github.workspace }}
-            
             echo ===
             cat ${{ github.workspace }}/.bazelrc.local
             echo ===
@@ -62,11 +61,11 @@ jobs:
         # Retry if needed due to network flakiness.
         run: |
           nix-shell --pure --run \
-            'cmd="bazel fetch @stackage//... --disk_cache=$HOME/.cache/bazel "; $cmd || $cmd || $cmd'
+            'cmd="bazel fetch @stackage//... --disk_cache=$HOME/.cache/bazel --repository_cache=$HOME/.cache/repo-cache"; $cmd || $cmd || $cmd'
 
       - name: Build all
         run: |
-            nix-shell --pure --run 'bazel build //... --disk_cache=$HOME/.cache/bazel '
+            nix-shell --pure --run 'bazel build //... --disk_cache=$HOME/.cache/bazel --repository_cache=$HOME/.cache/repo-cache'
 
       - name: Run tests
         run: |
