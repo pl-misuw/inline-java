@@ -44,6 +44,7 @@ jobs:
             echo "build --disk_cache=$HOME/.cache/bazel" >> .bazelrc.local
             echo ===
             ls -lah ${{ github.workspace }}
+            
             echo ===
             cat ${{ github.workspace }}/.bazelrc.local
             echo ===
