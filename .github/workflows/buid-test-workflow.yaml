@@ -35,12 +35,14 @@ jobs:
             echo ===
             ls -lah $HOME/work/inline-java/inline-java
             echo ===
+            echo "Setup .bazelrc.local"
             echo "build --bes_results_url=https://app.buildbuddy.io/invocation/" > ${{ github.workspace }}/.bazelrc.local
             echo "build --bes_backend=grpcs://cloud.buildbuddy.io" >> ${{ github.workspace }}/.bazelrc.local
             echo "build --remote_cache=grpcs://cloud.buildbuddy.io" >> ${{ github.workspace }}/.bazelrc.local
             echo "build --remote_timeout=3600" >> ${{ github.workspace }}/.bazelrc.local
             echo ===
             ls -lah ${{ github.workspace }}
+            echo ===
             cat ${{ github.workspace }}/.bazelrc.local
             echo ===
 
