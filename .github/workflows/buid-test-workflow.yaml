@@ -1,0 +1,59 @@
+name: build-test-workflow
+on: 
+  push:
+    branches-ignore:
+      - "master"
+jobs:
+  build-test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Cache
+        uses: actions/cache@v2.1.6
+        with:
+          path: |
+            ~/.cache/bazel
+          key: ${{ runner.os }}-inline-java-bazel
+
+      - uses: cachix/install-nix-action@v13
+        with:
+          nix_path: nixpkgs=channel:nixos-21.05
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup .bazelrc
+        run: |
+            ls -lah $HOME
+            echo ===
+            ls -lah $HOME/.cache/bazel
+            echo ===
+            ls ~/.cache/bazel
+            echo ===
+            ls -lah $HOME/work/inline-java/inline-java
+            echo ===
+            echo "build --bes_results_url=https://app.buildbuddy.io/invocation/" > ${{ github.workspace }}/.bazelrc.local
+            echo "build --bes_backend=grpcs://cloud.buildbuddy.io" >> ${{ github.workspace }}/.bazelrc.local
+            echo "build --remote_cache=grpcs://cloud.buildbuddy.io" >> ${{ github.workspace }}/.bazelrc.local
+            echo "build --remote_timeout=3600" >> ${{ github.workspace }}/.bazelrc.local
+            echo ===
+            ls -lah ${{ github.workspace }}
+            cat ${{ github.workspace }}/.bazelrc.local
+            echo ===
+
+      - name: Prefetch Stackage snapshot
+        # Retry if needed due to network flakiness.
+        run: |
+          nix-shell --pure --run \
+            'cmd="bazel fetch @stackage//... "; $cmd || $cmd || $cmd'
+
+      - name: Build all
+        run: |
+            nix-shell --pure --run 'bazel build //... '
+
+      - name: Run tests
+        run: |
+            nix-shell --pure --run 'bazel test --test_output=all //... --repository_cache=$HOME/.cache/repo-cache --disk_cache=$HOME/.cache/bazel'
