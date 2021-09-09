@@ -29,11 +29,11 @@ jobs:
         run: |
             ls -lah $HOME
             echo ===
-            ls -lah $HOME/.cache/bazel
+            # ls -lah $HOME/.cache/bazel
             echo ===
-            ls ~/.cache/bazel
+            # ls ~/.cache/bazel
             echo ===
-            ls -lah $HOME/work/inline-java/inline-java
+            # ls -lah $HOME/work/inline-java/inline-java
             echo ===
             echo "Setup .bazelrc.local"
             echo "build --bes_results_url=https://app.buildbuddy.io/invocation/" > ${{ github.workspace }}/.bazelrc.local
