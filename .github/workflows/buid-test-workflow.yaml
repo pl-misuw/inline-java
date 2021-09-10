@@ -27,6 +27,23 @@ jobs:
 
       - name: Setup .bazelrc
         run: |
+            echo "Setup .bazelrc.local"
+            echo "build --bes_results_url=https://app.buildbuddy.io/invocation/" > ${{ github.workspace }}/.bazelrc.local
+            echo "build --bes_backend=grpcs://cloud.buildbuddy.io" >> ${{ github.workspace }}/.bazelrc.local
+            echo "build --disk_cache=$HOME/.cache/bazel" >> .bazelrc.local
+
+      - name: Prefetch Stackage snapshot
+        # Retry if needed due to network flakiness.
+        run: |
+          nix-shell --run \
+            'cmd="bazel fetch @stackage//... --disk_cache=~/.cache/bazel --repository_cache=~/.cache/repo-cache"; $cmd || $cmd || $cmd'
+
+      - name: Build all
+        run: |
+            nix-shell --run 'bazel build //... --disk_cache=~/.cache/bazel --repository_cache=~/.cache/repo-cache'
+
+      - name: Cache tests
+        run: |
             ls -lah $HOME
             echo ===
             echo "check $HOME/.cache/bazel"
@@ -37,11 +54,6 @@ jobs:
             echo ===
             echo "check $HOME/work/inline-java/inline-java"
             ls -lah $HOME/work/inline-java/inline-java
-            echo ===
-            echo "Setup .bazelrc.local"
-            echo "build --bes_results_url=https://app.buildbuddy.io/invocation/" > ${{ github.workspace }}/.bazelrc.local
-            echo "build --bes_backend=grpcs://cloud.buildbuddy.io" >> ${{ github.workspace }}/.bazelrc.local
-            echo "build --disk_cache=$HOME/.cache/bazel" >> .bazelrc.local
             echo ===
             ls -lah ${{ github.workspace }}
             echo ===
@@ -56,16 +68,6 @@ jobs:
             pwd
             cd ${{ github.workspace }}
             echo ===
-
-      - name: Prefetch Stackage snapshot
-        # Retry if needed due to network flakiness.
-        run: |
-          nix-shell --run \
-            'cmd="bazel fetch @stackage//... --disk_cache=~/.cache/bazel --repository_cache=~/.cache/repo-cache"; $cmd || $cmd || $cmd'
-
-      - name: Build all
-        run: |
-            nix-shell --run 'bazel build //... --disk_cache=~/.cache/bazel --repository_cache=~/.cache/repo-cache'
 
       - name: Run tests
         run: |
