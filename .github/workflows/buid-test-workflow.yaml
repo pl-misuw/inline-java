@@ -35,12 +35,12 @@ jobs:
       - name: Prefetch Stackage snapshot
         # Retry if needed due to network flakiness.
         run: |
-          nix-shell --run \
+          nix-shell --pure --run \
             'cmd="bazel fetch @stackage//... --disk_cache=~/.cache/bazel --repository_cache=~/.cache/repo-cache"; $cmd || $cmd || $cmd'
 
       - name: Build all
         run: |
-            nix-shell --run 'bazel build //... --disk_cache=~/.cache/bazel --repository_cache=~/.cache/repo-cache'
+            nix-shell --pure --run 'bazel build //... --disk_cache=~/.cache/bazel --repository_cache=~/.cache/repo-cache'
 
       - name: Cache tests
         run: |
