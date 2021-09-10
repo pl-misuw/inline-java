@@ -33,7 +33,7 @@ jobs:
             echo "build --disk_cache=$HOME/.cache/bazel" >> .bazelrc.local
 
       - name: Prefetch Stackage snapshot
-        # Retry if needed due to network flakiness.
+        # Retry if needed due to network flakiness. 
         run: |
           nix-shell --pure --run \
             'cmd="bazel fetch @stackage//... --disk_cache=~/.cache/bazel --repository_cache=~/.cache/repo-cache"; $cmd || $cmd || $cmd'
