@@ -46,7 +46,6 @@ jobs:
 
       - name: Cache tests
         run: |
-            ls -lah /home/runner/.cache/bazel/_bazel_runner/2c59ef6553368b7f5137b41540403b36/external/rules_haskell_ghc_nixpkgs/bin
             echo ===
             ls -lah $HOME
             echo ===
