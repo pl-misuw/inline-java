@@ -15,8 +15,8 @@ jobs:
         uses: actions/cache@v2.1.6
         with:
           path: |
-            ~/.cache/repo-cache
-            ~/.cache/bazel
+            ${{ github.workspace }}/.cache/repo-cache
+            ${{ github.workspace }}/.cache/bazel
           key: ${{ runner.os }}-inline-java-bazel
 
       - uses: cachix/install-nix-action@v13
@@ -28,6 +28,7 @@ jobs:
 
       - name: Setup .bazelrc
         run: |
+            rm -rf /home/runner/.cache/bazel/_bazel_runner/2c59ef6553368b7f5137b41540403b36/external/rules_haskell_ghc_nixpkgs
             echo "Setup .bazelrc.local"
             echo "build --bes_results_url=https://app.buildbuddy.io/invocation/" > ${{ github.workspace }}/.bazelrc.local
             echo "build --bes_backend=grpcs://cloud.buildbuddy.io" >> ${{ github.workspace }}/.bazelrc.local
@@ -37,11 +38,11 @@ jobs:
         # Retry if needed due to network flakiness.
         run: |
           nix-shell --pure --run \
-            'cmd="bazel fetch @stackage//... --disk_cache=~/.cache/bazel --repository_cache=~/.cache/repo-cache"; $cmd || $cmd || $cmd'
+            'cmd="bazel fetch @stackage//... --disk_cache=${{ github.workspace }}/.cache/bazel --repository_cache=${{ github.workspace }}/.cache/repo-cache"; $cmd || $cmd || $cmd'
 
       - name: Build all
         run: |
-            nix-shell --pure --run 'bazel build //... --disk_cache=~/.cache/bazel --repository_cache=~/.cache/repo-cache'
+            nix-shell --pure --run 'bazel build //... --disk_cache=${{ github.workspace }}/.cache/bazel --repository_cache=${{ github.workspace }}/.cache/repo-cache'
 
       - name: Cache tests
         run: |
@@ -49,11 +50,11 @@ jobs:
             echo ===
             ls -lah $HOME
             echo ===
-            echo "check $HOME/.cache/bazel"
-            ls -lah $HOME/.cache/bazel
+            echo "check ${{ github.workspace }}/.cache/bazel"
+            ls -lah ${{ github.workspace }}/.cache/bazel
             echo ===
-            echo "check ~/.cache/bazel"
-            ls ~/.cache/bazel
+            echo "check ${{ github.workspace }}/.cache/bazel"
+            ls ${{ github.workspace }}/.cache/bazel
             echo ===
             echo "check $HOME/work/inline-java/inline-java"
             ls -lah $HOME/work/inline-java/inline-java
