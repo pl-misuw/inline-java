@@ -44,34 +44,6 @@ jobs:
         run: |
             nix-shell --pure --run 'bazel build //... --disk_cache=${{ github.workspace }}/.cache/bazel --repository_cache=${{ github.workspace }}/.cache/repo-cache'
 
-      - name: Cache tests
-        run: |
-            echo ===
-            ls -lah $HOME
-            echo ===
-            echo "check ${{ github.workspace }}/.cache/bazel"
-            ls -lah ${{ github.workspace }}/.cache/bazel
-            echo ===
-            echo "check ${{ github.workspace }}/.cache/bazel"
-            ls ${{ github.workspace }}/.cache/bazel
-            echo ===
-            echo "check $HOME/work/inline-java/inline-java"
-            ls -lah $HOME/work/inline-java/inline-java
-            echo ===
-            ls -lah ${{ github.workspace }}
-            echo ===
-            cat ${{ github.workspace }}/.bazelrc.local
-            echo ===
-            echo "check ~/.cache/bazel"
-            cd ~/.cache/bazel
-            pwd
-            echo ===
-            echo "check $HOME/.cache/bazel"
-            cd $HOME/.cache/bazel
-            pwd
-            cd ${{ github.workspace }}
-            echo ===
-
       - name: Run tests
         run: |
             nix-shell --pure --run 'bazel test --test_output=all //... '
