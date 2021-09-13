@@ -39,6 +39,10 @@ jobs:
           nix-shell --pure --run \
             'cmd="bazel fetch @stackage//... --disk_cache=~/.cache/bazel --repository_cache=~/.cache/repo-cache"; $cmd || $cmd || $cmd'
 
+      - name: Test Haskell Target
+        run: |
+            nix-shell --pure --run 'bazel run @rules_haskell_ghc_nixpkgs//:bin/ghc'
+
       - name: Build all
         run: |
             nix-shell --pure --run 'bazel build //... --disk_cache=~/.cache/bazel --repository_cache=~/.cache/repo-cache'
