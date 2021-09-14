@@ -28,7 +28,7 @@ jobs:
 
       - name: Setup .bazelrc
         run: |
-            # rm -rf /home/runner/.cache/bazel/_bazel_runner/2c59ef6553368b7f5137b41540403b36/external/rules_haskell_ghc_nixpkgs/
+            rm -rf /home/runner/.cache/bazel/_bazel_runner/2c59ef6553368b7f5137b41540403b36/external/rules_haskell_ghc_nixpkgs/bin/ghc
             echo "Setup .bazelrc.local"
             echo "build --bes_results_url=https://app.buildbuddy.io/invocation/" > ${{ github.workspace }}/.bazelrc.local
             echo "build --bes_backend=grpcs://cloud.buildbuddy.io" >> ${{ github.workspace }}/.bazelrc.local
